@@ -1,67 +1,67 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Controller;
+namespace App\Http\Controllers\Api\BookPurchaseAuthor\Controller;
 
+use App\Http\Controllers\Api\BookPurchaseAuthor\Model\BookPurchaseAuthor;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\Publisher\Model\Publishers;
 use Illuminate\Http\Request;
 
-class PublishersController extends Controller
+class BookPurchaseAuthorController extends Controller
 {
     public function index()
     {
-        // Fetch all the Publisher objects
-        return Publishers::all();
-        // $publishers = $query->simplePaginate(10);// Use the correct model name
+        // Fetch all the Book Purchase Author objects
+        return BookPurchaseAuthor::all();
+        // $bookPurchaseAuthor = $query->simplePaginate(10);// Use the correct model name
     }
 
     public function store(Request $request)
     {
         // Post request
         $request->validate([
-            'publisher_name', // Add validation rules
-            'publication_place',
+            'publisher_id' => 'required|exists:authors,author_id',
+            'author_id' => 'required|exists:authors,author_id',
         ]);
 
-        $publisher = Publishers::create($request->all()); // Create a new Publisher instance
+        $bookPurchaseAuthor = BookPurchaseAuthor::create($request->all()); // Create a new Book Purchase Author instance
         return response()->json([
             'message' => 'Successfully created',
-            'publisher' => $publisher // Return the created publisher data
+            'publisher' => $bookPurchaseAuthor // Return the created Book Purchase Author data
         ], 201);
     }
 
-    public function show(string $publisher_id)
+    public function show(string $bookPurchaseAuthor_id)
     {
         // Find the specific resource
-        $publisher = Publishers::find($publisher_id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $bookPurchaseAuthor = BookPurchaseAuthor::find($bookPurchaseAuthor_id); // Use the correct model name
+        if (!$bookPurchaseAuthor) {
+            return response()->json(['message' => 'Book Purchase Author not found'], 404); // Handle not found cases
         }
-        return $publisher;
+        return $bookPurchaseAuthor;
     }
 
     public function update(Request $request, string $id)
     {
         // Update the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $bookPurchaseAuthor = BookPurchaseAuthor::find($id); // Use the correct model name
+        if (!$bookPurchaseAuthor) {
+            return response()->json(['message' => 'Book Purchase Author not found'], 404); // Handle not found cases
         }
-        $publisher->update($request->all());
+        $bookPurchaseAuthor->update($request->all());
         return response()->json([
             'message' => 'Successfully updated',
-            'publisher' => $publisher // Return the updated publisher data
+            'publisher' => $bookPurchaseAuthor // Return the updated Book Purchase Author data
         ], 200);
     }
 
     public function destroy(string $id)
     {
         // Delete the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $bookPurchaseAuthor = BookPurchaseAuthor::find($id); // Use the correct model name
+        if (!$bookPurchaseAuthor) {
+            return response()->json(['message' => 'Book Purchase Author not found'], 404); // Handle not found cases
         }
-        $publisher->delete();
+        $bookPurchaseAuthor->delete();
         return response()->json([
             'message' => 'Successfully deleted'
         ], 200);

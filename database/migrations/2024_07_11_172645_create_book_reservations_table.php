@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('book_id')->nullable();
             $table->foreign('book_id')->references('book_id')->on('books')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();
         });
     }
 

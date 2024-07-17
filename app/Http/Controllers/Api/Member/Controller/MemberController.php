@@ -34,7 +34,7 @@ class MemberController extends BaseController
             'image_link' => 'nullable|url',
         ]);
 
-        $member = Member ::create([
+        $member = Member::create([
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
@@ -44,15 +44,15 @@ class MemberController extends BaseController
             'gender' => $request->gender,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'contact_number'=> $request->contact_number,
+            'contact_number' => $request->contact_number,
             'enrollment_year' => $request->enrollment_year,
             'role' => $request->role,
             'account_status' => $request->account_status,
             'image_link' => $request->image_link,
-           
+
         ]);
 
-        $token = $member->createToken('mytoken',['member'])->plainTextToken;
+        $token = $member->createToken('mytoken', ['member'])->plainTextToken;
 
         return response()->json([[
             [ // Wrap the data in an array
@@ -93,14 +93,14 @@ class MemberController extends BaseController
             ], 401]);
         }
 
-        $token = $member->createToken('mytoken',['member'])->plainTextToken;
+        $token = $member->createToken('mytoken', ['member'])->plainTextToken;
 
         return response()->json([
             [
-                'user' => $member->jsonSerializer(),
+                'user' => $member,
                 'token' => $token,
             ]
-        ],200);
+        ], 200);
     }
     public function index()
     {

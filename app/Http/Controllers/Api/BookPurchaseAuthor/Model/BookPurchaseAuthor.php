@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Model;
+namespace App\Http\Controllers\Api\BookPurchaseAuthor\Model;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-use Ramsey\Uuid\Uuid;
 
-class Publishers extends Model
+class BookPurchaseAuthor extends Model
 {
     use HasFactory;
 
-    protected $table = 'publishers';
     protected $primaryKey = 'publisher_id';
     protected $fillable = [
-        'publisher_name',
-        'publication_place',
+        'author_id',
+        'purchase_id',
     ];
 
     // Static counter for custom IDs

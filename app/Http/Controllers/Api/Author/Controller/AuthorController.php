@@ -1,67 +1,103 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Controller;
+namespace App\Http\Controllers\Api\Author\Controller;
 
+use App\Http\Controllers\Api\Author\Model\Author;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\Publisher\Model\Publishers;
+use App\Http\Controllers\Helpers\Filters\FilterHelper;
+use App\Http\Controllers\Helpers\Pagination\PaginationHelper;
+use App\Http\Controllers\Helpers\Sort\SortHelper;
 use Illuminate\Http\Request;
 
-class PublishersController extends Controller
+class AuthorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all the Publisher objects
-        return Publishers::all();
-        // $publishers = $query->simplePaginate(10);// Use the correct model name
+        $sortBy = $request->input('sort_by'); // sort_by params 
+        $sortOrder = $request->input('sort_order'); // sort_order params
+        $filters = $request->input('filters'); // filter params
+        $perPage = $request->input('per_page', 5); // Default to 10 items per page
+
+        $query = Author::query();
+
+        // Apply Sorting
+        $query = SortHelper::applySorting($query, $sortBy, $sortOrder);
+
+        // Apply Filtering
+        $query = FilterHelper::applyFiltering($query, $filters);
+
+        // Get Total Count for Pagination
+        $total = $query->count();
+
+        // Apply Pagination
+        $author = PaginationHelper::applyPagination(
+            $query->paginate($perPage)->items(),
+            $perPage,
+            $request->input('page', 1), // Default to page 1
+            $total
+        );
+        // Fetch all the author objects
+        // return Author::all();
+        // $Author = $query->simplePaginate(10);// Use the correct model name
+
+        // Return the data as a JSON response
+        return response()->json([[
+            'data' => $author,
+            'total' => $author->total(),
+            'per_page' => $author->perPage(),
+            'current_page' => $author->currentPage(),
+            'last_page' => $author->lastPage(),
+        ], 200]);
     }
 
     public function store(Request $request)
     {
         // Post request
         $request->validate([
-            'publisher_name', // Add validation rules
-            'publication_place',
+            'author_first_name' => 'required|string|max:100',
+            'author_first_name' => 'nullable|string|max:100',
+            'author_first_name' => 'required|string|max:100',
         ]);
 
-        $publisher = Publishers::create($request->all()); // Create a new Publisher instance
+        $author = Author::create($request->all()); // Create a new Author instance
         return response()->json([
             'message' => 'Successfully created',
-            'publisher' => $publisher // Return the created publisher data
+            'author' => $author // Return the created author data
         ], 201);
     }
 
-    public function show(string $publisher_id)
+    public function show(string $author_id)
     {
         // Find the specific resource
-        $publisher = Publishers::find($publisher_id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $author = Author::find($author_id); // Use the correct model name
+        if (!$author) {
+            return response()->json(['message' => 'Author not found'], 404); // Handle not found cases
         }
-        return $publisher;
+        return $author;
     }
 
     public function update(Request $request, string $id)
     {
         // Update the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $author = Author::find($id); // Use the correct model name
+        if (!$author) {
+            return response()->json(['message' => 'Author not found'], 404); // Handle not found cases
         }
-        $publisher->update($request->all());
+        $author->update($request->all());
         return response()->json([
             'message' => 'Successfully updated',
-            'publisher' => $publisher // Return the updated publisher data
+            'author' => $author // Return the updated author data
         ], 200);
     }
 
     public function destroy(string $id)
     {
         // Delete the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $author = Author::find($id); // Use the correct model name
+        if (!$author) {
+            return response()->json(['message' => 'Author not found'], 404); // Handle not found cases
         }
-        $publisher->delete();
+        $author->delete();
         return response()->json([
             'message' => 'Successfully deleted'
         ], 200);

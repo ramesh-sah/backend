@@ -1,11 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Authentication\UsersController;
-use App\Http\Controllers\Api\Authentication\AuthenticationController;
-use App\Http\Controllers\PublishersController;
-use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +20,10 @@ Route::name('')->group(base_path('app/Http/Controllers/Api/Employee/Route/Employ
 Route::name('')->group(base_path('app/Http/Controllers/Api/Member/Route/MemberRoute.php'));
 
 //----------------------------------------------------------------Library Route----------------------------------------------------------------
+
 Route::name('')->group(base_path('app/Http/Controllers/Api/Publisher/Route/PublisherRoute.php'));
 Route::name('')->group(base_path('app/Http/Controllers/Api/CoverImage/Route/CoverImageRoute.php'));
 Route::name('')->group(base_path('app/Http/Controllers/Api/BookPurchase/Route/BookPurchaseRoute.php'));
 Route::name('')->group(base_path('app/Http/Controllers/Api/Barcode/Route/BarcodeRoute.php'));
+Route::name('')->group(base_path('app/Http/Controllers/Api/Author/Route/AuthorRoute.php'));
+Route::name('')->group(base_path('app/Http/Controllers/Api/BookPurchaseAuthor/Route/BookPurchaseAuthorRoute.php'));
