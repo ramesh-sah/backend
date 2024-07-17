@@ -13,6 +13,256 @@ use Illuminate\Http\Request;
 
 class BookPurchaseController extends Controller
 {
+    public function addBooks(Request $request)
+    {
+        $isbns = null;
+        $authors = null;
+        $categories = null;
+        $publisher = null;
+        $coverImage = null;
+        $barcodes = null;
+        $bookOnlines = null;
+        $allData = $request->all();
+
+        // validate data for book purchase
+        $validation = Validator::make($allData, [
+            'class_number' => 'required|max:30',
+            'book_number' => 'required|max:30',
+            'title' => 'required|max:225',
+            'sub_title' => 'max:225',
+            'edition_statement' => 'max:225',
+            'number_of_pages' => 'required|max:100',
+            'publication_year' => 'required|max:4',
+            'series_statement' => 'max:224',
+            'quantity' => 'required',
+            'online' => 'max:2048',
+            'barcode' => 'required'
+        ]);
+
+        if ($validation->fails()) {
+            return $this->sendError('Validation failed', $validation->errors(), 400);
+        }
+
+        //validate isbn
+        if ($request->has('isbn')) {
+            $isbns = $request->isbn;
+            foreach ($isbns as $isbn) {
+                $isbnValidation = Validator::make($isbn, [
+                    'isbn' => 'required|max:13'
+                ]);
+
+                if ($isbnValidation->fails()) {
+                    return $this->sendError('Validation failed', $isbnValidation->errors(), 400);
+                }
+            }
+        }
+
+        // validate author
+        if ($request->has('author_name')) {
+            $authors = $request->author_name;
+            foreach ($authors as $author) {
+                $authorValidation = Validator::make($author, [
+                    'author_first_name' => 'required|max:100',
+                    'author_last_name' => 'required|max:100'
+                ]);
+
+                if ($authorValidation->fails()) {
+                    return $this->sendError('Validation failed', $authorValidation->errors(), 400);
+                }
+            }
+        }
+
+        // validate category
+        if ($request->has('category_name')) {
+            $categories = $request->category_name;
+            foreach ($categories as $category) {
+                $categoryValidation = Validator::make($category, [
+                    'category_name' => 'required|max:100',
+                ]);
+
+                if ($categoryValidation->fails()) {
+                    return $this->sendError('Validation failed', $categoryValidation->errors(), 400);
+                }
+            }
+        }
+
+        // validate publisher
+        if ($request->has('publisher_name')) {
+            $publisher = $request->publisher_name;
+            $publisherValidation = Validator::make($publisher, [
+                'publisher_name' => 'required|max:100',
+                'publication_place' => 'required|max:225',
+            ]);
+
+            if ($publisherValidation->fails()) {
+                return $this->sendError('Validation failed', $publisherValidation->errors(), 400);
+            }
+        }
+
+        // validate barcode
+        if ($request->has('barcode')) {
+            $barcodes = $request->barcode;
+            if (count($barcodes) == $allData['quantity']) {
+
+                foreach ($barcodes as $barcode) {
+                    $barcodeValidator = Validator::make($barcode, [
+                        'barcode' => 'required'
+                    ]);
+
+                    if ($barcodeValidator->fails()) {
+                        return $this->sendError('Validation failed', $barcodeValidator->errors(), 400);
+                    }
+                }
+            } else {
+                return $this->sendError('Validation failed', 'Barcode count should be equal to quantity', 400);
+            }
+        }
+
+        // validate book onlines
+        if ($request->has('book_online')) {
+            $bookOnlines = $request->book_online;
+            foreach ($bookOnlines as $bookOnline) {
+                $bookOnlineValidator = Validator::make($bookOnline, [
+                    'name' => 'required|max:225',
+                    'price' => 'required',
+                    'url' => 'required|max:2048'
+                ]);
+
+                if ($bookOnlineValidator->fails()) {
+                    return $this->sendError('Validation failed', $bookOnlineValidator->errors(), 400);
+                }
+            }
+        }
+
+        // validate and store cover image in server
+        if ($request->hasFile('cover_image')) {
+            $coverImangeValidator = Validator::make($request->all(), [
+                'cover_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+
+            if ($coverImangeValidator->fails()) {
+                return $this->sendError('Validation failed', $coverImangeValidator->errors(), 400);
+            }
+            $coverImage = $request->file('cover_image')->store('public/uploads/cdn');
+        }
+
+        // create publisher
+        if ($coverImage) {
+            $coverImage = CoverImage::create([
+                "link" => $coverImage
+            ]);
+            $allData['image_id'] = $coverImage->image_id;
+        }
+
+        // create publisher
+        if ($publisher) {
+            $publisher = Publisher::create($publisher);
+            $allData['publisher_id'] = $publisher->publisher_id;
+        }
+
+        // create book purchase
+        $bookPurchase = BookPurchase::create($allData);
+
+        // create barcode
+        if ($barcodes) {
+            foreach ($barcodes as $barcode) {
+
+                // create barcode
+                $barcode = Barcode::create([
+                    'barcode' => $barcode['barcode'],
+                    'purchase_id' => $bookPurchase->purchase_id,
+                ]);
+            }
+        }
+
+        /**
+         * create isbn
+         * create book purchase isbn
+         */
+        if ($isbns) {
+            foreach ($isbns as $isbn) {
+
+                // create isbn
+                $isbn = Isbn::create([
+                    'isbn' => $isbn['isbn'],
+                ]);
+
+                // create book purchase isbn
+                $bookPurchaseIsbn = BookPurchasesIsbns::create([
+                    'purchase_id' => $bookPurchase->purchase_id,
+                    'isbn_id' => $isbn->isbn_id
+                ]);
+            }
+        }
+
+        /**
+         * create author
+         * create book purchase author
+         */
+        if ($authors) {
+            foreach ($authors as $author) {
+                $authorMiddleName = isset($author['author_middle_name']) ? $author['author_middle_name'] : null;
+
+                // create author
+                $author = Author::create([
+                    'author_first_name' => $author['author_first_name'],
+                    'author_middle_name' => $authorMiddleName,
+                    'author_last_name' => $author['author_last_name']
+                ]);
+
+                // create book purchase author
+                $bookPurchaseAuthor = BookPurchaseAuthors::create([
+                    'purchase_id' => $bookPurchase->purchase_id,
+                    'author_id' => $author->author_id
+                ]);
+            }
+        }
+
+        /**
+         * create category
+         * create book purchase category
+         */
+        if ($categories) {
+            foreach ($categories as $category) {
+
+                // create category
+                $category = Category::create([
+                    'category_name' => $category['category_name']
+                ]);
+
+                // create book purchase category
+                $bookPurchaseCategories = BookPurchasesCategories::create([
+                    'purchase_id' => $bookPurchase->purchase_id,
+                    'category_id' => $category->category_id
+                ]);
+            }
+        }
+
+        /**
+         * create book online
+         * create book purchase book online
+         */
+        if ($bookOnlines) {
+            foreach ($bookOnlines as $bookOnline) {
+
+                // create book online
+                $bookOnline = BookOnline::create([
+                    'name' => $bookOnline['name'],
+                    'price' => $bookOnline['price'],
+                    'url' => $bookOnline['url']
+                ]);
+
+                // create book purchase book online
+                $bookPurchaseBookOnline = BookPurchasesBookOnlines::create([
+                    'purchase_id' => $bookPurchase->purchase_id,
+                    'online_id' => $bookOnline->online_id
+                ]);
+            }
+        }
+
+        return $this->sendResponse($bookPurchase, 'Book purchase created successfully');
+    }
+
     public function index(Request $request)
     {
         $sortBy = $request->input('sort_by'); // sort_by params 
