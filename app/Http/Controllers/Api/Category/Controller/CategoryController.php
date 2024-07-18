@@ -1,69 +1,104 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Controller;
+namespace App\Http\Controllers\Api\Category\Controller;
+
+use App\Http\Controllers\Helpers\Sort\SortHelper;
+use App\Http\Controllers\Helpers\Filters\FilterHelper;
+use App\Http\Controllers\Helpers\Pagination\PaginationHelper;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\Publisher\Model\Publishers;
+use App\Http\Controllers\Api\Category\Model\Category;
 use Illuminate\Http\Request;
 
-class PublishersController extends Controller
+class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all the Publisher objects
-        return Publishers::all();
-        // $publishers = $query->simplePaginate(10);// Use the correct model name
-    }
+        $sortBy = $request->input('sort_by'); // sort_by params 
+        $sortOrder = $request->input('sort_order'); // sort_order params
+        $filters = $request->input('filters'); // filter params
+        $perPage = $request->input('per_page', 5); // Default to 10 items per page
 
+        $query = Category::query();
+
+        // Apply Sorting
+        $query = SortHelper::applySorting($query, $sortBy, $sortOrder);
+
+        // Apply Filtering
+        $query = FilterHelper::applyFiltering($query, $filters);
+
+        // Get Total Count for Pagination
+        $total = $query->count();
+
+        // Apply Pagination
+        $category = PaginationHelper::applyPagination(
+            $query->paginate($perPage)->items(),
+            $perPage,
+            $request->input('page', 1), // Default to page 1
+            $total
+        );
+
+
+        // foreach ($bookPurchase as $bookPurchase) {
+        //     $bookPurchase->CoverImageForeign;
+        // }
+
+        return response()->json([[
+            'data' => $category,
+            'total' => $category->total(),
+            'per_page' => $category->perPage(),
+            'current_page' => $category->currentPage(),
+            'last_page' => $category->lastPage(),
+        ], 200]);
+    }
     public function store(Request $request)
     {
         // Post request
         $request->validate([
-            'publisher_name', // Add validation rules
-            'publication_place',
+            'category_name' => 'required|string',
         ]);
 
-        $publisher = Publishers::create($request->all()); // Create a new Publisher instance
-        return response()->json([
+        $category = Category::create($request->all()); // Create a new Publisher instance
+        return response()->json([[
             'message' => 'Successfully created',
-            'publisher' => $publisher // Return the created publisher data
-        ], 201);
+            'publisher' => $category // Return the created publisher data
+        ], 201]);
     }
 
-    public function show(string $publisher_id)
+    public function show(string $category_id)
     {
         // Find the specific resource
-        $publisher = Publishers::find($publisher_id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $category = Category::find($category_id); // Use the correct model name
+        if (!$category) {
+            return response()->json([['message' => 'Category not found'], 404]); // Handle not found cases
         }
-        return $publisher;
+        return  response()->json([$category]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $category_id)
     {
         // Update the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $category = Category::find($category_id); // Use the correct model name
+        if (!$category) {
+            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
         }
-        $publisher->update($request->all());
-        return response()->json([
+        $category->update($request->all());
+        return response()->json([[
             'message' => 'Successfully updated',
-            'publisher' => $publisher // Return the updated publisher data
-        ], 200);
+            'publisher' => $category // Return the updated publisher data
+        ], 200]);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $category_id)
     {
         // Delete the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $category = Category::find($category_id); // Use the correct model name
+        if (!$category) {
+            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
         }
-        $publisher->delete();
-        return response()->json([
+        $category->delete();
+        return response()->json([[
             'message' => 'Successfully deleted'
-        ], 200);
+        ], 200]);
     }
 }

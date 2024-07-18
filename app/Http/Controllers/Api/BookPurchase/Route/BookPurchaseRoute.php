@@ -12,4 +12,5 @@ Route::prefix('admin/bookPurchase')->middleware(['auth:admin'])->group(function 
     Route::post('/', [BookPurchaseController::class, 'store']);
     Route::put('/{id}', [BookPurchaseController::class, 'update']);
     Route::delete('/{id}', [BookPurchaseController::class, 'destroy']);
+    
 });

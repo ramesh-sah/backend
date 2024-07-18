@@ -2,6 +2,12 @@
 
 namespace App\Http\Controllers\Api\AdminUser\Controller;
 
+
+use App\Http\Controllers\Helpers\Sort\SortHelper;
+use App\Http\Controllers\Helpers\Filters\FilterHelper;
+use App\Http\Controllers\Helpers\Pagination\PaginationHelper;
+
+
 use App\Http\Controllers\Api\BaseController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\AdminUser\Model\Admin;
@@ -86,20 +92,72 @@ class AdminController extends BaseController
             'token' => $token,
         ],201]);
     }
-
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all the admin objects
-        return Admin::all();
-    }
+        $sortBy = $request->input('sort_by'); // sort_by params 
+        $sortOrder = $request->input('sort_order'); // sort_order params
+        $filters = $request->input('filters'); // filter params
+        $perPage = $request->input('per_page', 5); // Default to 10 items per page
 
-    public function show(string $user_id)
+        $query = Admin::query();
+
+        // Apply Sorting
+        $query = SortHelper::applySorting($query, $sortBy, $sortOrder);
+
+        // Apply Filtering
+        $query = FilterHelper::applyFiltering($query, $filters);
+
+        // Get Total Count for Pagination
+        $total = $query->count();
+
+        // Apply Pagination
+        $admin = PaginationHelper::applyPagination(
+            $query->paginate($perPage)->items(),
+            $perPage,
+            $request->input('page', 1), // Default to page 1
+            $total
+        );
+
+
+        // foreach ($bookPurchase as $bookPurchase) {
+        //     $bookPurchase->CoverImageForeign;
+        // }
+
+        return response()->json([[
+            'data' => $admin,
+            'total' => $admin->total(),
+            'per_page' => $admin->perPage(),
+            'current_page' => $admin->currentPage(),
+            'last_page' => $admin->lastPage(),
+        ], 200]);
+
+        // Return the data as a JSON response
+
+    }
+   
+
+    public function show(string $admin_id)
     {
         // Find the specific admin resource
-        $admin = Admin::find($user_id);
+        $admin = Admin::find($admin_id);
         if (!$admin) {
             return response()->json([['message' => 'Admin user not found'], 404]);
         }
-        return $admin;
+        return response()->json($admin);
     }
+
+    public function update(Request $request, string $admin_id)
+    {
+        // Update the resource
+        $admin= Admin::find($admin_id); // Use the correct model name
+        if (!$admin) {
+            return response()->json([['message' => 'admin not found'], 404]); // Handle not found cases
+        }
+        $admin->update($request->all());
+        return response()->json([[
+            'message' => 'Successfully updated',
+            'publisher' => $admin->jsonSerialize() // Return the updated publisher data
+        ], 200]);
+    }
+
 }

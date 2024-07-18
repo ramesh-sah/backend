@@ -57,7 +57,7 @@ class MemberController extends BaseController
         return response()->json([[
             [ // Wrap the data in an array
                 'data' => [
-                    'member' => $member->jsonSerializer(),
+                    'member' => $member,
                     'token' => $token,
                 ]
             ]
@@ -95,12 +95,12 @@ class MemberController extends BaseController
 
         $token = $member->createToken('mytoken', ['member'])->plainTextToken;
 
-        return response()->json([
+        return response()->json([[
             [
-                'user' => $member->jsonSerializer(),
+                'user' => $member,
                 'token' => $token,
             ]
-        ], 200);
+        ], 200]);
     }
     public function index()
     {
@@ -112,11 +112,11 @@ class MemberController extends BaseController
     public function show(string $user_id)
     {
         // Find the specific resource
-        $publisher = Member::find($user_id); // Use the correct model name
-        if (!$publisher) {
+        $member = Member::find($user_id); // Use the correct model name
+        if (!$member) {
             return response()->json([['message' => 'User Not Found not found'], 404]); // Handle not found cases
         }
-        return $publisher;
+        return response()->json($member);
     }
 
     // public function update(Request $request, string $id)

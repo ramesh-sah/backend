@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Controller;
+namespace App\Http\Controllers\Api\Notification\Controller;
 
 use App\Http\Controllers\Helpers\Sort\SortHelper;
 use App\Http\Controllers\Helpers\Filters\FilterHelper;
 use App\Http\Controllers\Helpers\Pagination\PaginationHelper;
 
+
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\Publisher\Model\Publishers;
+use App\Http\Controllers\Api\Notification\Model\Notification;
 use Illuminate\Http\Request;
 
-class PublishersController extends Controller
+class NotificationController extends Controller
 {
     public function index(Request $request)
     {
@@ -19,7 +20,7 @@ class PublishersController extends Controller
         $filters = $request->input('filters'); // filter params
         $perPage = $request->input('per_page', 5); // Default to 10 items per page
 
-        $query = Publishers::query();
+        $query = Notification::query();
 
         // Apply Sorting
         $query = SortHelper::applySorting($query, $sortBy, $sortOrder);
@@ -31,7 +32,7 @@ class PublishersController extends Controller
         $total = $query->count();
 
         // Apply Pagination
-        $publishers = PaginationHelper::applyPagination(
+        $notification = PaginationHelper::applyPagination(
             $query->paginate($perPage)->items(),
             $perPage,
             $request->input('page', 1), // Default to page 1
@@ -40,12 +41,12 @@ class PublishersController extends Controller
 
         // Return the data as a JSON response
         return response()->json([[
-            'data' => $publishers->toArray(),
+            'data' => $notification->toArray(),
             'total' => $total,
             'per_page' => $perPage,
-            'current_page' => $publishers->currentPage(),
-            'last_page' => $publishers->lastPage(),
-        ],200]);
+            'current_page' => $notification->currentPage(),
+            'last_page' => $notification->lastPage(),
+        ], 200]);
     }
 
 
@@ -53,49 +54,50 @@ class PublishersController extends Controller
     {
         // Post request
         $request->validate([
-            'publisher_name', // Add validation rules
-            'publication_place',
+            'title' => 'required|string',
+            'type' => 'required|string',
+            'message' => 'required|string',
         ]);
 
-        $publisher = Publishers::create($request->all()); // Create a new Publisher instance
+        $notification = Notification::create($request->all()); // Create a new Publisher instance
         return response()->json([[
             'message' => 'Successfully created',
-            'publisher' => $publisher // Return the created publisher data
+            'publisher' => $notification // Return the created publisher data
         ], 201]);
     }
 
-    public function show(string $publisher_id)
+    public function show(string $notification_id)
     {
         // Find the specific resource
-        $publisher = Publishers::find($publisher_id); // Use the correct model name
-        if (!$publisher) {
+        $notification = Notification::find($notification_id); // Use the correct model name
+        if (!$notification) {
             return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
         }
-        
+        return response()->json(($notification));
     }
 
-    public function update(Request $request, string $publisher_id)
+    public function update(Request $request, string $notification_id)
     {
         // Update the resource
-        $publisher = Publishers::find($publisher_id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
+        $notification = Notification::find($notification_id); // Use the correct model name
+        if (!$notification) {
+            return response()->json(['message' => 'Notification not found'], 404); // Handle not found cases
         }
-        $publisher->update($request->all());
+        $notification->update($request->all());
         return response()->json([[
             'message' => 'Successfully updated',
-            'publisher' => $publisher // Return the updated publisher data
+            'publisher' => $notification // Return the updated publisher data
         ], 200]);
     }
 
-    public function destroy(string $publisher_id)
+    public function destroy(string $notification_id)
     {
         // Delete the resource
-        $publisher = Publishers::find($publisher_id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
+        $notification = Notification::find($notification_id); // Use the correct model name
+        if (!$notification) {
+            return response()->json([['message' => 'Notification not found'], 404]); // Handle not found cases
         }
-        $publisher->delete();
+        $notification->delete();
         return response()->json([[
             'message' => 'Successfully deleted'
         ], 200]);

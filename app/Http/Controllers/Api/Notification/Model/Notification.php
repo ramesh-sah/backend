@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api\Category\Model;
+namespace App\Http\Controllers\Api\Notification\Model;
 
+use App\Traits\UpdateCreator;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,21 +11,23 @@ use Illuminate\Support\Str;
 use Mehradsadeghi\FilterQueryString\FilterQueryString;
 use Ramsey\Uuid\Uuid;
 
-class Category extends Model
+class Notification extends Model
 {
-    use HasFactory, HasUuids,  SoftDeletes, FilterQueryString;
+    use HasFactory, FilterQueryString, HasUuids, SoftDeletes, FilterQueryString, UpdateCreator;
 
-    protected $table = 'categories';
-    protected $primaryKey = 'category_id';
-    protected $fillable = [
-        'category_name',
-        
-    ];
+    protected $table = 'notifications';
+    protected $primaryKey = 'notification_id';
     protected $filters = [
         'sort',
         'like',
         'in',
     ];
+    protected $fillable = [
+        'title',
+        'type',
+        'message'
+    ];
     protected $dates = ['deleted_at'];
+
     
 }

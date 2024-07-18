@@ -1,36 +1,45 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Model;
+namespace App\Http\Controllers\Api\MembersNotification\Model;
 
+use App\Http\Controllers\Api\Member\Model\Member;
+use App\Http\Controllers\Api\Notification\Model\Notification;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Mehradsadeghi\FilterQueryString\FilterQueryString;
 use Ramsey\Uuid\Uuid;
 
-class Publishers extends Model
+class MembersNotification extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids,  SoftDeletes, FilterQueryString;
 
-    protected $table = 'publishers';
-    protected $primaryKey = 'publisher_id';
-    protected $fillable = [
-        'publisher_name',
-        'publication_place',
+    protected $table = 'members_notifications';
+    protected $primaryKey = 'member_notification_id';
+    protected $filters = [
+        'sort',
+        'like',
+        'in',
     ];
+    protected $fillable = [
+        'member_id',
+        'notification_id',
+        'isRead',
+    ];
+    public function memberForeign()
+    {
+        return $this->belongsTo(Member::class, 'member_id');
+    }
+    public function notificationForeign()
+    {
+        return $this->belongsTo(Notification::class, 'notification_id');
+    }
 
-    // Static counter for custom IDs
-    // private static $counter = 0;
 
-    // public static function create(array $attributes = [])
-    // {
-    //     // Generate a custom ID
-    //     self::$counter++;
-    //     $customId = 'pub-' . str_pad(self::$counter, 4, '0', STR_PAD_LEFT);
 
-    //     // Set the custom ID as the publisher_id
-    //     $attributes['publisher_id'] = $customId;
+    protected $dates = ['deleted_at'];
 
-    //     // Create the publisher
-    //     return parent::create($attributes);
-    // }
+    
 }

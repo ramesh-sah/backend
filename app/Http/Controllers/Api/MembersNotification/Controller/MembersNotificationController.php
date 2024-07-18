@@ -1,67 +1,113 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Controller;
+namespace App\Http\Controllers\Api\MembersNotification\Controller;
+
+
+use App\Http\Controllers\Helpers\Sort\SortHelper;
+use App\Http\Controllers\Helpers\Filters\FilterHelper;
+use App\Http\Controllers\Helpers\Pagination\PaginationHelper;
+
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\Publisher\Model\Publishers;
+use App\Http\Controllers\Api\MembersNotification\Model\MembersNotification;
 use Illuminate\Http\Request;
 
-class PublishersController extends Controller
+class MembersNotificationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all the Publisher objects
-        return Publishers::all();
-        // $publishers = $query->simplePaginate(10);// Use the correct model name
+        $sortBy = $request->input('sort_by'); // sort_by params 
+        $sortOrder = $request->input('sort_order'); // sort_order params
+        $filters = $request->input('filters'); // filter params
+        $perPage = $request->input('per_page', 5); // Default to 10 items per page
+
+        $query = MembersNotification::query();
+
+        // Apply Sorting
+        $query = SortHelper::applySorting($query, $sortBy, $sortOrder);
+
+        // Apply Filtering
+        $query = FilterHelper::applyFiltering($query, $filters);
+
+        // Get Total Count for Pagination
+        $total = $query->count();
+
+        // Apply Pagination
+        $membersNotification = PaginationHelper::applyPagination(
+            $query->paginate($perPage)->items(),
+            $perPage,
+            $request->input('page', 1), // Default to page 1
+            $total
+        );
+
+
+        // foreach ($bookPurchase as $bookPurchase) {
+        //     $bookPurchase->CoverImageForeign;
+        // }
+
+        return response()->json([[
+            'data' => $membersNotification,
+            'total' => $membersNotification->total(),
+            'per_page' => $membersNotification->perPage(),
+            'current_page' => $membersNotification->currentPage(),
+            'last_page' => $membersNotification->lastPage(),
+        ], 200]);
+
+        // Return the data as a JSON response
+
     }
+
 
     public function store(Request $request)
     {
         // Post request
         $request->validate([
-            'publisher_name', // Add validation rules
-            'publication_place',
+            'member_id' => 'required|string|exists:members,member_id',
+            'notification_id' => 'required|string|exists:notifications,notification_id',
+            'isRead' => 'boolean',
         ]);
 
-        $publisher = Publishers::create($request->all()); // Create a new Publisher instance
-        return response()->json([
+        $membersNotification = MembersNotification::create($request->all()); // Create a new Publisher instance
+        return response()->json([[
             'message' => 'Successfully created',
-            'publisher' => $publisher // Return the created publisher data
-        ], 201);
+            'memebersNotification' => $membersNotification // Return the created publisher data
+        ], 201]);
     }
 
-    public function show(string $publisher_id)
+    public function show(string $member_notification_id)
     {
         // Find the specific resource
-        $publisher = Publishers::find($publisher_id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $membersNotification = MembersNotification::find($member_notification_id); // Use the correct model name
+        if (!$membersNotification) {
+            return response()->json([['message' => 'memeber not found'], 404]); // Handle not found cases
         }
-        return $publisher;
+        $membersNotification->memberForeign;
+        $membersNotification->notificationForeign;
+        return response()->json([($membersNotification)->jsonSerialize(), 200]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $member_notification_id)
     {
         // Update the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $membersNotification = MembersNotification::find($member_notification_id); // Use the correct model name
+        if (!$membersNotification) {
+            return response()->json(['message' => 'Member Notification  not found'], 404); // Handle not found cases
         }
-        $publisher->update($request->all());
+        $membersNotification->update($request->all());
         return response()->json([
             'message' => 'Successfully updated',
-            'publisher' => $publisher // Return the updated publisher data
+            'member notification' => $membersNotification // Return the updated publisher data
         ], 200);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $member_notification_id)
     {
         // Delete the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $membersNotification = MembersNotification::find($member_notification_id); // Use the correct model name
+        if (!$membersNotification) {
+            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
         }
-        $publisher->delete();
+        $membersNotification->delete();
         return response()->json([
             'message' => 'Successfully deleted'
         ], 200);

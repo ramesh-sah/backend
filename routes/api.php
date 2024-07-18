@@ -29,3 +29,7 @@ Route::name('')->group(base_path('app/Http/Controllers/Api/Publisher/Route/Publi
 Route::name('')->group(base_path('app/Http/Controllers/Api/CoverImage/Route/CoverImageRoute.php'));
 Route::name('')->group(base_path('app/Http/Controllers/Api/BookPurchase/Route/BookPurchaseRoute.php'));
 Route::name('')->group(base_path('app/Http/Controllers/Api/Barcode/Route/BarcodeRoute.php'));
+Route::name('')->group(base_path('app/Http/Controllers/Api/Category/Route/CategoryRoute.php'));
+Route::name('')->group(base_path('app/Http/Controllers/Api/BookPurchaseCategory/Route/BookPurchaseCategoryRoute.php'));
+Route::name('')->group(base_path('app/Http/Controllers/Api/Notification/Route/NotificationRoute.php'));
+Route::name('')->group(base_path('app/Http/Controllers/Api/MembersNotification/Route/MembersNotificationRoute.php'));
