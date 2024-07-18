@@ -8,6 +8,7 @@ use App\Http\Controllers\Helpers\Filters\FilterHelper;
 use App\Http\Controllers\Helpers\Pagination\PaginationHelper;
 use App\Http\Controllers\Helpers\Sort\SortHelper;
 use Illuminate\Http\Request;
+use PharIo\Manifest\Author as ManifestAuthor;
 
 class AuthorController extends Controller
 {
@@ -76,24 +77,25 @@ class AuthorController extends Controller
         return $author;
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $author_id)
     {
         // Update the resource
-        $author = Author::find($id); // Use the correct model name
+        $author = Author::find($author_id); // Use the correct model name
         if (!$author) {
-            return response()->json(['message' => 'Author not found'], 404); // Handle not found cases
+            return response()->json([['message' => 'Author not found'], 404]); // Handle not found cases
         }
         $author->update($request->all());
-        return response()->json([
+        return response()->json([[
             'message' => 'Successfully updated',
             'author' => $author // Return the updated author data
-        ], 200);
+        ], 200]);
     }
 
-    public function destroy(string $id)
+
+    public function destroy(string $author_id)
     {
         // Delete the resource
-        $author = Author::find($id); // Use the correct model name
+        $author = Author::find($author_id); // Use the correct model name
         if (!$author) {
             return response()->json(['message' => 'Author not found'], 404); // Handle not found cases
         }

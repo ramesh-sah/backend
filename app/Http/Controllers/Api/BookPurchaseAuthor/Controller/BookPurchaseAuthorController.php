@@ -40,10 +40,10 @@ class BookPurchaseAuthorController extends Controller
         return $bookPurchaseAuthor;
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $bookPurchaseAuthor_id)
     {
         // Update the resource
-        $bookPurchaseAuthor = BookPurchaseAuthor::find($id); // Use the correct model name
+        $bookPurchaseAuthor = BookPurchaseAuthor::find($bookPurchaseAuthor_id); // Use the correct model name
         if (!$bookPurchaseAuthor) {
             return response()->json(['message' => 'Book Purchase Author not found'], 404); // Handle not found cases
         }
@@ -54,10 +54,10 @@ class BookPurchaseAuthorController extends Controller
         ], 200);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $bookPurchaseAuthor_id)
     {
         // Delete the resource
-        $bookPurchaseAuthor = BookPurchaseAuthor::find($id); // Use the correct model name
+        $bookPurchaseAuthor = BookPurchaseAuthor::find($bookPurchaseAuthor_id); // Use the correct model name
         if (!$bookPurchaseAuthor) {
             return response()->json(['message' => 'Book Purchase Author not found'], 404); // Handle not found cases
         }
