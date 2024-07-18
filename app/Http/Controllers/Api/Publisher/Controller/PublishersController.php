@@ -45,7 +45,7 @@ class PublishersController extends Controller
             'per_page' => $perPage,
             'current_page' => $publishers->currentPage(),
             'last_page' => $publishers->lastPage(),
-        ],200]);
+        ], 200]);
     }
 
 
@@ -53,8 +53,8 @@ class PublishersController extends Controller
     {
         // Post request
         $request->validate([
-            'publisher_name', // Add validation rules
-            'publication_place',
+            'publisher_name' => 'required|string|',
+            'publication_place' => 'required|string',
         ]);
 
         $publisher = Publishers::create($request->all()); // Create a new Publisher instance
@@ -71,7 +71,6 @@ class PublishersController extends Controller
         if (!$publisher) {
             return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
         }
-        
     }
 
     public function update(Request $request, string $publisher_id)
