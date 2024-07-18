@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api\Author\Model;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Author extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $primaryKey = 'author_id';
     protected $fillable = [
