@@ -28,3 +28,4 @@ Route::name('barcode')->group(base_path('app/Http/Controllers/Api/Barcode/Route/
 Route::name('author')->group(base_path('app/Http/Controllers/Api/Author/Route/AuthorRoute.php'));
 Route::name('bookpurchaseauthor')->group(base_path('app/Http/Controllers/Api/BookPurchaseAuthor/Route/BookPurchaseAuthorRoute.php'));
 Route::name('bookonline')->group(base_path('app/Http/Controllers/Api/BookOnline/Route/BookOnlineRoute.php'));
+Route::name('bookpurchasebookonline')->group(base_path('app/Http/Controllers/Api/BookPurchaseBookOnline/Route/BookPurchaseOnlineRoute.php'));
