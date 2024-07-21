@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Barcode\Controller;
 use App\Http\Controllers\Helpers\Sort\SortHelper;
 use App\Http\Controllers\Helpers\Filters\FilterHelper;
 use App\Http\Controllers\Helpers\Pagination\PaginationHelper;
+
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\Barcode\Model\Barcode;
 use Illuminate\Http\Request;
