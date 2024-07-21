@@ -30,3 +30,4 @@ Route::name('bookpurchaseauthor')->group(base_path('app/Http/Controllers/Api/Boo
 Route::name('bookonline')->group(base_path('app/Http/Controllers/Api/BookOnline/Route/BookOnlineRoute.php'));
 Route::name('bookpurchasebookonline')->group(base_path('app/Http/Controllers/Api/BookPurchaseBookOnline/Route/BookPurchaseOnlineRoute.php'));
 Route::name('payment')->group(base_path('app/Http/Controllers/Api/Payment/Route/PaymentRoute.php'));
+Route::name('bookreservation')->group(base_path('app/Http/Controllers/Api/BookReservation/Route/BookReservationRoute.php'));

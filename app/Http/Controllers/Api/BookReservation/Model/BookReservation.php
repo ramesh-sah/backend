@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Api\BookReservation\Model;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-use Ramsey\Uuid\Uuid;
 
 class BookReservation extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
-    protected $table = 'book_reservation';
-    protected $primaryKey = 'book_id';
-    // protected $fillable = [
-    //     'publisher_name',
-    //     'publication_place',
-    // ];
+    protected $primaryKey = 'reservation_id';
+    protected $fillable = [
+        'class_number',
+        'book_number',
+        'status',
+        'member_id',
+        'employee_id',
+        'book_id'
+    ];
 
     // Static counter for custom IDs
     // private static $counter = 0;
