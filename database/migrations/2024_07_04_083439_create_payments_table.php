@@ -16,7 +16,7 @@ return new class extends Migration
             $table->date('payment_date')->default(now());
             $table->integer('paid_amount');
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();
         });
     }
 

@@ -29,3 +29,4 @@ Route::name('author')->group(base_path('app/Http/Controllers/Api/Author/Route/Au
 Route::name('bookpurchaseauthor')->group(base_path('app/Http/Controllers/Api/BookPurchaseAuthor/Route/BookPurchaseAuthorRoute.php'));
 Route::name('bookonline')->group(base_path('app/Http/Controllers/Api/BookOnline/Route/BookOnlineRoute.php'));
 Route::name('bookpurchasebookonline')->group(base_path('app/Http/Controllers/Api/BookPurchaseBookOnline/Route/BookPurchaseOnlineRoute.php'));
+Route::name('payment')->group(base_path('app/Http/Controllers/Api/Payment/Route/PaymentRoute.php'));
