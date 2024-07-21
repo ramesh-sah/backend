@@ -24,12 +24,12 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('address', 225)->default('');
-            $table->enum('role', ['admin', 'employee', 'coordinator', 'staff', 'student'])->default('student');
+            $table->enum('role', ['employee', 'coordinator'])->default('employee');
             $table->enum('gender', ['male', 'female', 'others'])->default('others');
             $table->string('contact_number', 10)->default(0000000000);
             $table->string('enrollment_year', 4);
             $table->date('account_creation_date')->default(now());
-            $table->string('account_status', 10)->default('active');
+            $table->enum('account_status', ['active', 'inactive', 'closed'])->default('active');
             $table->string('image_link', 2048)->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -71,6 +71,10 @@ class PublishersController extends Controller
         if (!$publisher) {
             return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
         }
+        return response()->json([
+            'message'=>"Publisher Found",
+            'publisher' => $publisher,
+            200]);
     }
 
     public function update(Request $request, string $publisher_id)

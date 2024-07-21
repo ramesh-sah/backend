@@ -15,12 +15,18 @@ return new class extends Migration
             $table->uuid('due_id')->primary();
             $table->string('description', 400);
             $table->string('amount', 5);
+            $table->enum('due_status', ['cleared',  'pending'])->default('pending');
             $table->string('member_id');
             $table->foreign('member_id')->references('member_id')->on('members')->onDelete('cascade');
-            $table->string('payment_id')->nullable();
-            $table->foreign('payment_id')->references('payment_id')->on('payments')->onDelete('cascade');
+            $table->string('employee_id')->nullable();
+            $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
+            $table->string('book_id')->nullable();
+            $table->foreign('book_id')->references('book_id')->on('books')->onDelete('cascade');
+            $table->string('issue_id')->nullable();
+            $table->foreign('issue_id')->references('issue_id')->on('issues')->onDelete('cascade');
+
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();
         });
     }
 

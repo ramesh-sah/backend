@@ -61,13 +61,13 @@ class BarcodeController extends Controller
         // Post request
         $request->validate([
             'barcode' => 'required|string', // Add validation rules
-            'purchase_id' => 'required|string',
+       
         ]);
 
         $barcode = Barcode::create($request->all()); // Create a new Publisher instance
         return response()->json([[
             'message' => 'Successfully created',
-            'publisher' => $barcode // Return the created publisher data
+            'barcode data' => $barcode // Return the created publisher data
         ], 201]);
     }
 

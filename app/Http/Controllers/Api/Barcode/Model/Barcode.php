@@ -26,13 +26,7 @@ class Barcode extends Model
 
     protected $fillable = [
       'barcode',
-      'purchase_id'
     ];
-    public function bookPurchaseForeign()
-    {
-        return $this->belongsTo(BookPurchase::class, 'purchase_id');
-    }
-
 
     protected $dates = ['deleted_at'];
 

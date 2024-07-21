@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('membership_id')->primary();
             $table->date('start_date')->default(now());
             $table->date('expiry_date');
+            $table->enum('membership_status', ['active', 'expired'])->default('active');
             $table->string('member_id');
             $table->foreign('member_id')->references('member_id')->on('members')->onDelete('cascade');
             $table->string('employee_id');

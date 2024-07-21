@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('author_id');
             $table->foreign('author_id')->references('author_id')->on('authors');
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();
         });
     }
 

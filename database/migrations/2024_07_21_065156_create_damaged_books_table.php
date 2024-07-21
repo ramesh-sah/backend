@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('book_authors', function (Blueprint $table) {
-            $table->uuid('book_authors')->primary();
+        Schema::create('damaged_books', function (Blueprint $table) {
+            $table->uuid('damaged_book_id')->primary();
             $table->string('book_id');
-            $table->foreign('book_id')->references('book_id')->on('books');
-            $table->string('author_id');
-            $table->foreign('author_id')->references('author_id')->on('authors');
+            $table->foreign('book_id')->references('book_id')->on('books')->onDelete('cascade');
+            $table->date('damaged_on')->default(now());
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('book_authors');
+        Schema::dropIfExists('damaged_books');
     }
 };

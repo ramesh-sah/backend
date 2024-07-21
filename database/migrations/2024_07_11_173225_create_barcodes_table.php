@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('barcodes', function (Blueprint $table) {
             $table->uuid('barcode_id')->primary();
             $table->string('barcode', 10)->unique();
-            $table->string('purchase_id');
-            $table->foreign('purchase_id')->references('purchase_id')->on('book_purchases');
+            // $table->string('purchase_id');
+            // $table->foreign('purchase_id')->references('purchase_id')->on('book_purchases');
             $table->timestamps();
             $table->softDeletes(); 
         });

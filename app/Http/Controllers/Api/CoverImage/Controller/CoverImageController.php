@@ -68,7 +68,7 @@ class CoverImageController extends Controller
         // Find the specific resource
         $coverImage = CoverImage::find($image_id); // Use the correct model name
         if (!$coverImage) {
-            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
+            return response()->json([['message' => 'cover image not found'], 404]); // Handle not found cases
         }
         return $coverImage;
     }
@@ -78,7 +78,7 @@ class CoverImageController extends Controller
         // Update the resource
         $coverImage = CoverImage::find($image_id); // Use the correct model name
         if (!$coverImage) {
-            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
+            return response()->json([['message' => 'cover Image not found'], 404]); // Handle not found cases
         }
         $coverImage->update($request->all());
         return response()->json([[
@@ -92,7 +92,7 @@ class CoverImageController extends Controller
         // Delete the resource
         $coverImage = CoverImage::find($image_id); // Use the correct model name
         if (!$coverImage) {
-            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
+            return response()->json([['message' => 'Cover Image not found'], 404]); // Handle not found cases
         }
         $coverImage->delete();
         return response()->json([[

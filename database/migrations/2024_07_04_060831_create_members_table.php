@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('first_name', 100);
             $table->string('middle_name', 100)->default('')->nullable();
             $table->string('last_name', 100);
+            $table->string('roll_number', 100)->default('')->nullable()->unique();
             $table->date('dob');
             $table->string('username')->unique();
             $table->string('email')->unique();
@@ -25,9 +26,9 @@ return new class extends Migration
             $table->enum('gender', ['male', 'female', 'others'])->default('others');
             $table->string('contact_number', 10)->default(0000000000);
             $table->string('enrollment_year', 4);
-            $table->enum('role', ['admin', 'employee', 'coordinator', 'staff', 'student'])->default('student');
+            $table->enum('role', ['staff', 'student'])->default('student');
             $table->date('account_creation_date')->default(now());
-            $table->string('account_status', 10)->default('pending')->nullable();
+            $table->enum('account_status', ['active', 'inactive', 'suspended'])->default('active');
             $table->string('image_link', 2048)->nullable();
             $table->timestamps();
             $table->softDeletes();

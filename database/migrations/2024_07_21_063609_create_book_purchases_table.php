@@ -23,9 +23,21 @@ return new class extends Migration
             $table->string('series_statement', 224)->nullable();
             $table->date('added_date')->default(now());
             $table->integer('quantity');
-            $table->string('online', 225)->nullable();
             $table->string('image_id', 225);
             $table->foreign('image_id')->references('image_id')->on('cover_images')->onDelete('cascade');
+            $table->string('online_id', 225);
+            $table->foreign('online_id')->references('online_id')->on('book_onlines')->onDelete('cascade');
+            $table->string('barcode_id', 225);
+            $table->foreign('barcode_id')->references('barcode_id')->on('barcodes')->onDelete('cascade');
+            $table->string('author_id', 225);
+            $table->foreign('author_id')->references('author_id')->on('authors')->onDelete('cascade');
+            $table->string('category_id', 225);
+            $table->foreign('category_id')->references('category_id')->on('categories')->onDelete('cascade');
+            $table->string('publisher_id', 225);
+            $table->foreign('publisher_id')->references('publisher_id')->on('publishers')->onDelete('cascade');
+            $table->string('isbn_id', 225);
+            $table->foreign('isbn_id')->references('isbn_id')->on('isbns')->onDelete('cascade');
+
             $table->softDeletes();
             $table->timestamps();
         });

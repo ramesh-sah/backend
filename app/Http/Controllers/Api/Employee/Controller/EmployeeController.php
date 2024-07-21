@@ -55,12 +55,12 @@ class EmployeeController extends BaseController
 
         $token = $employee->createToken('admin token', ['employee'])->plainTextToken; //created the admin token
 
-        return response()->json([
-            'data' => [
-                'employee data' => $employee->jsonSerializer(),
-                'token' => $token,
-            ]
-        ], 201);
+        return response()->json([[
+
+            'employee data' => $employee,
+            'token' => $token,
+
+        ], 201]);
     }
 
     public function logoutEmployee(Request $request)
@@ -92,10 +92,10 @@ class EmployeeController extends BaseController
 
         $token = $employee->createToken('mytoken', ['employee'])->plainTextToken; //created the admin token after the login
 
-        return response()->json([
-            'employee data' => $employee->jsonSerializer(),
+        return response()->json([[
+            'employee data' => $employee,
             'token' => $token,
-        ],201);
+        ], 201]);
     }
 
     public function index()

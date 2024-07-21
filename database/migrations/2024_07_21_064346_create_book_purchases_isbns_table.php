@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('books_isbns', function (Blueprint $table) {
-            $table->uuid('books_isbns')->primary();
-            $table->string('book_id');
-            $table->foreign('book_id')->references('book_id')->on('books');
+        Schema::create('book_purchases_isbns', function (Blueprint $table) {
+            $table->uuid('book_purchases_isbns')->primary();
+            $table->string('purchase_id');
+            $table->foreign('purchase_id')->references('purchase_id')->on('book_purchases');
             $table->string('isbn_id');
             $table->foreign('isbn_id')->references('isbn_id')->on('isbns')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('books_isbns');
+        Schema::dropIfExists('book_purchases_isbns');
     }
 };

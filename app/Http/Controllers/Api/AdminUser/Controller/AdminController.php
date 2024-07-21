@@ -24,7 +24,7 @@ class AdminController extends BaseController
     public function registerAdmin(Request $request)
     {
         $request->validate([
-            'parent_table' => 'required|string',
+
             'username' => 'required|string|unique:admins,username',
             
             'email' => 'required|email|regex:/@patancollege\.edu\.np$/|unique:admins,email',
@@ -37,7 +37,6 @@ class AdminController extends BaseController
         ]);
 
         $admin = Admin::create([
-            'parent_table' => $request->parent_table,
             'username' => $request->username,
             'email' => $request->email,
             'email_verified_at' => $request->email_verified_at,
