@@ -1,67 +1,68 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Controller;
+namespace App\Http\Controllers\Api\Issue\Controller;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\Publisher\Model\Publishers;
+use App\Http\Controllers\Api\Issue\Model\Issue;
 use Illuminate\Http\Request;
 
-class PublishersController extends Controller
+class IssueController extends Controller
 {
     public function index()
     {
-        // Fetch all the Publisher objects
-        return Publishers::all();
-        // $publishers = $query->simplePaginate(10);// Use the correct model name
+        // Fetch all the Issue objects
+        return Issue::all();
+        // $issues = $query->simplePaginate(10);// Use the correct model name
     }
 
     public function store(Request $request)
     {
         // Post request
         $request->validate([
-            'publisher_name', // Add validation rules
-            'publication_place',
+            'due_date' => now()->addDays(14),
+            'member_id' => 'required|exists:members,member_id',
+            'book_id' => 'required|exists:books,book_id',
         ]);
 
-        $publisher = Publishers::create($request->all()); // Create a new Publisher instance
+        $issue = Issue::create($request->all()); // Create a new Issue instance
         return response()->json([
             'message' => 'Successfully created',
-            'publisher' => $publisher // Return the created publisher data
+            'issue' => $issue // Return the created issue data
         ], 201);
     }
 
-    public function show(string $publisher_id)
+    public function show(string $issue_id)
     {
         // Find the specific resource
-        $publisher = Publishers::find($publisher_id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $issue = Issue::find($issue_id); // Use the correct model name
+        if (!$issue) {
+            return response()->json(['message' => 'Issue not found'], 404); // Handle not found cases
         }
-        return $publisher;
+        return $issue;
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $issue_id)
     {
         // Update the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $issue = Issue::find($issue_id); // Use the correct model name
+        if (!$issue) {
+            return response()->json(['message' => 'Issue not found'], 404); // Handle not found cases
         }
-        $publisher->update($request->all());
+        $issue->update($request->all());
         return response()->json([
             'message' => 'Successfully updated',
-            'publisher' => $publisher // Return the updated publisher data
+            'issue' => $issue // Return the updated issue data
         ], 200);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $issue_id)
     {
         // Delete the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $issue = Issue::find($issue_id); // Use the correct model name
+        if (!$issue) {
+            return response()->json(['message' => 'Issue not found'], 404); // Handle not found cases
         }
-        $publisher->delete();
+        $issue->delete();
         return response()->json([
             'message' => 'Successfully deleted'
         ], 200);
