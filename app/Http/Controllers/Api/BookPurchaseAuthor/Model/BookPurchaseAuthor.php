@@ -10,7 +10,7 @@ class BookPurchaseAuthor extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $primaryKey = 'publisher_id';
+    protected $primaryKey = 'book_purchase_authors';
     protected $fillable = [
         'author_id',
         'purchase_id',

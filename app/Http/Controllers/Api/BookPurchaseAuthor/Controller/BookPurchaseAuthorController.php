@@ -19,14 +19,14 @@ class BookPurchaseAuthorController extends Controller
     {
         // Post request
         $request->validate([
-            'publisher_id' => 'required|exists:authors,author_id',
+            'purchase_id' => 'required|exists:book_purchases,purchase_id',
             'author_id' => 'required|exists:authors,author_id',
         ]);
 
         $bookPurchaseAuthor = BookPurchaseAuthor::create($request->all()); // Create a new Book Purchase Author instance
         return response()->json([
             'message' => 'Successfully created',
-            'publisher' => $bookPurchaseAuthor // Return the created Book Purchase Author data
+            'purchase' => $bookPurchaseAuthor // Return the created Book Purchase Author data
         ], 201);
     }
 
@@ -50,7 +50,7 @@ class BookPurchaseAuthorController extends Controller
         $bookPurchaseAuthor->update($request->all());
         return response()->json([
             'message' => 'Successfully updated',
-            'publisher' => $bookPurchaseAuthor // Return the updated Book Purchase Author data
+            'purchase' => $bookPurchaseAuthor // Return the updated Book Purchase Author data
         ], 200);
     }
 

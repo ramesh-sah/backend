@@ -15,15 +15,16 @@ use Illuminate\Support\Facades\Route;
 
 // ----------------------------------------------------------------User routes------------------------------------------------
 
-Route::name('')->group(base_path('app/Http/Controllers/Api/AdminUser/Route/AdminRoute.php'));
-Route::name('')->group(base_path('app/Http/Controllers/Api/Employee/Route/EmployeeRoute.php'));
-Route::name('')->group(base_path('app/Http/Controllers/Api/Member/Route/MemberRoute.php'));
+Route::name('admin')->group(base_path('app/Http/Controllers/Api/AdminUser/Route/AdminRoute.php'));
+Route::name('employee')->group(base_path('app/Http/Controllers/Api/Employee/Route/EmployeeRoute.php'));
+Route::name('member')->group(base_path('app/Http/Controllers/Api/Member/Route/MemberRoute.php'));
 
 //----------------------------------------------------------------Library Route----------------------------------------------------------------
 
-Route::name('')->group(base_path('app/Http/Controllers/Api/Publisher/Route/PublisherRoute.php'));
-Route::name('')->group(base_path('app/Http/Controllers/Api/CoverImage/Route/CoverImageRoute.php'));
-Route::name('')->group(base_path('app/Http/Controllers/Api/BookPurchase/Route/BookPurchaseRoute.php'));
-Route::name('')->group(base_path('app/Http/Controllers/Api/Barcode/Route/BarcodeRoute.php'));
-Route::name('')->group(base_path('app/Http/Controllers/Api/Author/Route/AuthorRoute.php'));
-Route::name('')->group(base_path('app/Http/Controllers/Api/BookPurchaseAuthor/Route/BookPurchaseAuthorRoute.php'));
+Route::name('publisher')->group(base_path('app/Http/Controllers/Api/Publisher/Route/PublisherRoute.php'));
+Route::name('coverimage')->group(base_path('app/Http/Controllers/Api/CoverImage/Route/CoverImageRoute.php'));
+Route::name('bookpurchase')->group(base_path('app/Http/Controllers/Api/BookPurchase/Route/BookPurchaseRoute.php'));
+Route::name('barcode')->group(base_path('app/Http/Controllers/Api/Barcode/Route/BarcodeRoute.php'));
+Route::name('author')->group(base_path('app/Http/Controllers/Api/Author/Route/AuthorRoute.php'));
+Route::name('bookpurchaseauthor')->group(base_path('app/Http/Controllers/Api/BookPurchaseAuthor/Route/BookPurchaseAuthorRoute.php'));
+Route::name('bookonline')->group(base_path('app/Http/Controllers/Api/BookOnline/Route/BookOnlineRoute.php'));
