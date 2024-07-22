@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Controller;
+namespace App\Http\Controllers\Api\DamagedBook\Controller;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\Publisher\Model\Publishers;

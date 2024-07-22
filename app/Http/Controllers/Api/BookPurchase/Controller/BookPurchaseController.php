@@ -14,14 +14,15 @@ use Illuminate\Support\Facades\Validator;
 
 class BookPurchaseController extends Controller
 {
-    
-    
+
+
     public function index(Request $request)
     {
         $sortBy = $request->input('sort_by'); // sort_by params 
         $sortOrder = $request->input('sort_order'); // sort_order params
         $filters = $request->input('filters'); // filter params
         $perPage = $request->input('per_page', 10); // Default to 10 items per page
+        $currentPage = $request->input('page', 1); // Default to page 1
 
         $query = BookPurchase::query();
 
@@ -34,35 +35,35 @@ class BookPurchaseController extends Controller
         // Get Total Count for Pagination
         $total = $query->count();
 
-        // Apply Pagination
-        $bookPurchase = PaginationHelper::applyPagination(
-            $query->paginate($perPage)->items(),
+        // Get the paginated result
+        $bookPurchases = $query->skip(($currentPage - 1) * $perPage)->take($perPage)->get();
+
+        // Retrieve foreign key data
+        foreach ($bookPurchases as $bookPurchase) {
+            $bookPurchase->coverImageForeign;  // Get the foreign key data
+            $bookPurchase->bookOnlineForeign;  // Get the foreign key data
+            $bookPurchase->barcodeForeign;     // Get the foreign key data
+            $bookPurchase->authorForeign;      // Get the foreign key data
+            $bookPurchase->categoryForeign;    // Get the foreign key data
+            $bookPurchase->publisherForeign;   // Get the foreign key data
+            $bookPurchase->isbnForeign;        // Get the foreign key data
+        }
+
+        // Apply Pagination Helper
+        $paginatedResult = PaginationHelper::applyPagination(
+            $bookPurchases,
             $perPage,
-            $request->input('page', 1), // Default to page 1
+            $currentPage,
             $total
         );
 
-
-        foreach ($bookPurchase as $bookPurchase) {
-            $bookPurchase->coverImageForeign;  // Get the foreign key data i.e-> CoverImageForeign from the Model instance function
-            $bookPurchase->bookOnlineForeign; // Get the foreign key data
-            $bookPurchase->barcodeForeign; // Get the foreign key data
-            $bookPurchase->authorForeign; // Get the foreign key data
-            $bookPurchase->categoryForeign; // Get the foreign key data
-            $bookPurchase->publisherForeign; // Get the foreign key data
-            $bookPurchase->isbnForeign; // Get the foreign key data
-        }
-
-        return response()->json([[
-            'data' => $bookPurchase,
-            'total' => $bookPurchase->total(),
-            'per_page' => $bookPurchase->perPage(),
-            'current_page' => $bookPurchase->currentPage(),
-            'last_page' => $bookPurchase->lastPage(),
-        ], 200]);
-
-        // Return the data as a JSON response
-
+        return response()->json([
+            'data' => $paginatedResult->items(),
+            'total' => $paginatedResult->total(),
+            'per_page' => $paginatedResult->perPage(),
+            'current_page' => $paginatedResult->currentPage(),
+            'last_page' => $paginatedResult->lastPage(),
+        ], 200);
     }
 
 
