@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\Book\Controller;
 
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Book\Model\Book;
+
+
 use App\Http\Controllers\Helpers\Sort\SortHelper;
 use App\Http\Controllers\Helpers\Filters\FilterHelper;
 use App\Http\Controllers\Helpers\Pagination\PaginationHelper;
-
-
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\Book\Model\Book;
-use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -19,6 +19,7 @@ class BookController extends Controller
         $sortOrder = $request->input('sort_order'); // sort_order params
         $filters = $request->input('filters'); // filter params
         $perPage = $request->input('per_page', 10); // Default to 10 items per page
+        $currentPage = $request->input('page', 1); // Default to page 1
 
         $query = Book::query();
 
@@ -31,29 +32,33 @@ class BookController extends Controller
         // Get Total Count for Pagination
         $total = $query->count();
 
-        // Apply Pagination
-        $book = PaginationHelper::applyPagination(
-            $query->paginate($perPage)->items(),
+        // Eager load relationships
+        $query->with('bookPurchaseForeign.coverImageForeign', 'bookPurchaseForeign.bookOnlineForeign', 'bookPurchaseForeign.barcodeForeign', 'bookPurchaseForeign.authorForeign', 'bookPurchaseForeign.categoryForeign', 'bookPurchaseForeign.publisherForeign', 'bookPurchaseForeign.isbnForeign');
+
+
+        // Get the paginated result
+        $book = $query->skip(($currentPage - 1) * $perPage)->take($perPage)->get();
+
+        // Retrieve foreign key data
+        foreach ($book as $book) {
+            $book->bookPurchaseForeign;        // Get the foreign key data
+        }
+
+        // Apply Pagination Helper
+        $paginatedResult = PaginationHelper::applyPagination(
+            $book,
             $perPage,
-            $request->input('page', 1), // Default to page 1
+            $currentPage,
             $total
         );
 
-
-        // foreach ($bookPurchase as $bookPurchase) {
-        //     $bookPurchase->CoverImageForeign;
-        // }
-
         return response()->json([[
-            'data' => $book,
-            'total' => $book->total(),
-            'per_page' => $book->perPage(),
-            'current_page' => $book->currentPage(),
-            'last_page' => $book->lastPage(),
+            'data' => $paginatedResult->items(),
+            'total' => $paginatedResult->total(),
+            'per_page' => $paginatedResult->perPage(),
+            'current_page' => $paginatedResult->currentPage(),
+            'last_page' => $paginatedResult->lastPage(),
         ], 200]);
-
-        // Return the data as a JSON response
-
     }
 
 
@@ -61,8 +66,8 @@ class BookController extends Controller
     {
         // Post request
         $request->validate([
-            'book_status'=>'required|string',
-       'purchase_id'=>'required|string|exists:book_purchases,purchase_id',
+            'book_status' => 'nullable|string',
+            'purchase_id' => 'required|string|exists:book_purchases,purchase_id',
         ]);
 
         $book = Book::create($request->all()); // Create a new Publisher instance
@@ -74,20 +79,30 @@ class BookController extends Controller
 
     public function show(string $book_id)
     {
-        // Find the specific resource
-        $book = Book::find($book_id); // Use the correct model name
+        // Find the specific resource with eager loading of relationships
+        $book = Book::with([
+            'bookPurchaseForeign.coverImageForeign',
+            'bookPurchaseForeign.bookOnlineForeign',
+            'bookPurchaseForeign.barcodeForeign',
+            'bookPurchaseForeign.authorForeign',
+            'bookPurchaseForeign.categoryForeign',
+            'bookPurchaseForeign.publisherForeign',
+            'bookPurchaseForeign.isbnForeign'
+        ])->find($book_id);
+
         if (!$book) {
             return response()->json(['message' => 'Book not found'], 404); // Handle not found cases
         }
-        $book->bookPurchaseForeign();
-        return response()->json([($book)->jsonSerialize(), 200]);
+
+        // Return the book along with its relationships
+        return response()->json([$book, 200]);
     }
-    
+
 
     public function update(Request $request, string $book_id)
     {
         // Update the resource
-        $book= Book::find($book_id); // Use the correct model name
+        $book = Book::find($book_id); // Use the correct model name
         if (!$book) {
             return response()->json(['message' => 'Book not found'], 404); // Handle not found cases
         }

@@ -40,6 +40,7 @@ Route::name('')->group(base_path('app/Http/Controllers/Api/BookPurchaseCategory/
 //bookPurchaseIsbns routes here
 
 Route::name('')->group(base_path('app/Http/Controllers/Api/Book/Route/BookRoute.php'));
+Route::name('')->group(base_path('app/Http/Controllers/Api/DamagedBook/Route/DamagedBookRoute.php'));
 
 
 

@@ -81,7 +81,7 @@ class BookPurchaseController extends Controller
             'series_statement' => 'string|nullable',
             'quantity' => 'required|integer',
             'image_id' => 'required|string|exists:cover_images,image_id',
-            'online_id' => 'required|string|exists:book_onlines,online_id',
+            'online_id' => 'string|exists:book_onlines,online_id',
             'barcode_id' => 'required|string|exists:barcodes,barcode_id',
             'author_id' => 'required|string|exists:authors,author_id',
             'category_id' => 'required|string|exists:categories,category_id',

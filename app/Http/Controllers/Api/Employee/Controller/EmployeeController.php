@@ -36,6 +36,7 @@ class EmployeeController extends BaseController
             'image_link' => 'nullable|url',
         ]);
 
+
         $employee = Employee::create([
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
@@ -56,10 +57,10 @@ class EmployeeController extends BaseController
         $token = $employee->createToken('admin token', ['employee'])->plainTextToken; //created the admin token
 
         return response()->json([[
-
-            'employee data' => $employee,
-            'token' => $token,
-
+            'data' => [
+                'employee data' => $employee->jsonSerialize(),
+                'token' => $token,
+            ]
         ], 201]);
     }
 

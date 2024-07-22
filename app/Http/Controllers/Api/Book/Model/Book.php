@@ -23,16 +23,15 @@ class Book extends Model
         'in',
     ];
     protected $fillable = [
-       'book_status',
-       'purchase_id',
-       // 'image_id',
-       // 'publisher_id',
-       
+        'book_status',
+        'purchase_id',
+        // 'image_id',
+        // 'publisher_id',
+
     ];
-    public function bookPurchaseForeign(){
+    public function bookPurchaseForeign()
+    {
         return $this->belongsTo(BookPurchase::class, 'purchase_id');
     }
     protected $dates = ['deleted_at'];
-
-   
 }

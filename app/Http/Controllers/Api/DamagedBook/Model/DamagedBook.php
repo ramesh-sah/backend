@@ -1,36 +1,35 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Model;
+namespace App\Http\Controllers\Api\DamagedBook\Model;
 
+use App\Http\Controllers\Api\Book\Model\Book;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Mehradsadeghi\FilterQueryString\FilterQueryString;
 use Ramsey\Uuid\Uuid;
 
-class Publishers extends Model
+class DamagedBook extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids,  SoftDeletes, FilterQueryString;
 
-    protected $table = 'publishers';
-    protected $primaryKey = 'publisher_id';
-    protected $fillable = [
-        'publisher_name',
-        'publication_place',
+    protected $table = 'damaged_books';
+    protected $primaryKey = 'damaged_book_id';
+    protected $filters = [
+        'sort',
+        'like',
+        'in',
     ];
-
-    // Static counter for custom IDs
-    // private static $counter = 0;
-
-    // public static function create(array $attributes = [])
-    // {
-    //     // Generate a custom ID
-    //     self::$counter++;
-    //     $customId = 'pub-' . str_pad(self::$counter, 4, '0', STR_PAD_LEFT);
-
-    //     // Set the custom ID as the publisher_id
-    //     $attributes['publisher_id'] = $customId;
-
-    //     // Create the publisher
-    //     return parent::create($attributes);
-    // }
+    protected $fillable = [
+        'book_id',
+        
+    ];
+    public function bookForeign()
+    {
+        return $this->belongsTo(Book::class, 'book_id');
+    }
+    protected $dates = ['deleted_at'];
+    
 }
