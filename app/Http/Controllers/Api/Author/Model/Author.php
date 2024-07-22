@@ -19,8 +19,6 @@ class Author extends Model
         'author_first_name',
         'author_middle_name',
         'author_last_name',
-        
-    ];
 
-    
+    ];
 }

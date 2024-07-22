@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Api\BookPurchaseAuthor\Model;
+namespace App\Http\Controllers\Api\BookPurchaseBookOnline\Model;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BookPurchaseAuthor extends Model
+class BookPurchasesBookOnline extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $primaryKey = 'book_purchase_authors';
+    protected $primaryKey = 'book_purchases_book_onlines_id';
     protected $fillable = [
-        'author_id',
         'purchase_id',
+        'online_id'
     ];
 }

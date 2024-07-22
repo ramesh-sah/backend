@@ -93,10 +93,10 @@ class EmployeeController extends BaseController
 
         $token = $employee->createToken('mytoken', ['employee'])->plainTextToken; //created the admin token after the login
 
-        return response()->json([[
+        return response()->json([
             'employee data' => $employee,
             'token' => $token,
-        ], 201]);
+        ], 201);
     }
 
     public function index()

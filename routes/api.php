@@ -1,11 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Authentication\UsersController;
-use App\Http\Controllers\Api\Authentication\AuthenticationController;
-use App\Http\Controllers\PublishersController;
-use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------

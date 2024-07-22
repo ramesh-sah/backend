@@ -30,8 +30,6 @@ class MemberController extends BaseController
             'password' => 'required|string|min:8',
             'contact_number' => 'required|digits:10',
             'enrollment_year' => 'required|integer|min:1900|max:' . date('Y'),
-            'role' => 'required|string|in:student,teacher,admin',
-            'account_status' => 'required|string|in:active,inactive,suspended',
             'image_link' => 'nullable|url',
         ]);
 
@@ -48,7 +46,6 @@ class MemberController extends BaseController
             'password' => Hash::make($request->password),
             'contact_number' => $request->contact_number,
             'enrollment_year' => $request->enrollment_year,
-            'role' => $request->role,
             'account_status' => $request->account_status,
             'image_link' => $request->image_link,
 
@@ -97,12 +94,12 @@ class MemberController extends BaseController
 
         $token = $member->createToken('mytoken', ['member'])->plainTextToken;
 
-        return response()->json([[
+        return response()->json([
             [
                 'user' => $member,
                 'token' => $token,
             ]
-        ], 200]);
+        ], 200);
     }
     public function index()
     {
