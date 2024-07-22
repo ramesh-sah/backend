@@ -22,15 +22,12 @@ class MemberController extends BaseController
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
             'dob' => 'required|date',
-            'username' => 'required| string |max:20',
             'address' => 'required|string|max:500',
             'gender' => 'required|in:male,female,other',
-            'email' => 'required|email|regex:/@patancollege\.edu\.np$/|unique:admins,email',
+            'email' => 'required|email|regex:/@patancollege\.edu\.np$/|unique:members,email',
             'password' => 'required|string|min:8',
             'contact_number' => 'required|digits:10',
             'enrollment_year' => 'required|integer|min:1900|max:' . date('Y'),
-            'role' => 'required|string|in:student,teacher,admin',
-            'account_status' => 'required|string|in:active,inactive,suspended',
             'image_link' => 'nullable|url',
         ]);
 
@@ -39,14 +36,12 @@ class MemberController extends BaseController
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
             'dob' => $request->dob,
-            'username' => $request->username,
             'address' => $request->address,
             'gender' => $request->gender,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'contact_number' => $request->contact_number,
             'enrollment_year' => $request->enrollment_year,
-            'role' => $request->role,
             'account_status' => $request->account_status,
             'image_link' => $request->image_link,
 
@@ -57,7 +52,7 @@ class MemberController extends BaseController
         return response()->json([[
             [ // Wrap the data in an array
                 'data' => [
-                    'member' => $member->jsonSerializer(),
+                    'member' => $member,
                     'token' => $token,
                 ]
             ]
