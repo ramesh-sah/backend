@@ -24,7 +24,7 @@ class EmployeeController extends BaseController
             'last_name' => 'required|string',
             'dob' => 'required',
             'username' => 'required|string|unique:employees,username',
-            'email' => 'required|email|regex:/@patancollege\.edu\.np$/|unique:admins,email',
+            'email' => 'required|email|regex:/@patancollege\.edu\.np$/|unique:employees,email',
             'email_verified_at' => 'nullable|date',
             'password' => 'required|string|min:8',
             'address' => 'required|string',
