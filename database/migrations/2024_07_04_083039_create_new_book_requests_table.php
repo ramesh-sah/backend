@@ -18,10 +18,10 @@ return new class extends Migration
             $table->date('request_date')->default(now());
             $table->string('member_id');
             $table->foreign('member_id')->references('member_id')->on('members')->onDelete('cascade');
-            $table->string('employee_id');
+            $table->string('employee_id')->default('');
             $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();
         });
     }
 
