@@ -21,7 +21,7 @@ class BookPurchaseController extends Controller
         $sortBy = $request->input('sort_by'); // sort_by params 
         $sortOrder = $request->input('sort_order'); // sort_order params
         $filters = $request->input('filters'); // filter params
-        $perPage = $request->input('per_page', 5); // Default to 10 items per page
+        $perPage = $request->input('per_page', 10); // Default to 10 items per page
 
         $query = BookPurchase::query();
 
@@ -43,9 +43,15 @@ class BookPurchaseController extends Controller
         );
 
 
-        // foreach ($bookPurchase as $bookPurchase) {
-        //     $bookPurchase->CoverImageForeign;
-        // }
+        foreach ($bookPurchase as $bookPurchase) {
+            $bookPurchase->coverImageForeign;  // Get the foreign key data i.e-> CoverImageForeign from the Model instance function
+            $bookPurchase->bookOnlineForeign; // Get the foreign key data
+            $bookPurchase->barcodeForeign; // Get the foreign key data
+            $bookPurchase->authorForeign; // Get the foreign key data
+            $bookPurchase->categoryForeign; // Get the foreign key data
+            $bookPurchase->publisherForeign; // Get the foreign key data
+            $bookPurchase->isbnForeign; // Get the foreign key data
+        }
 
         return response()->json([[
             'data' => $bookPurchase,
@@ -73,15 +79,20 @@ class BookPurchaseController extends Controller
             'publication_year' => 'required|string',
             'series_statement' => 'string|nullable',
             'quantity' => 'required|integer',
-            'online' => 'string|nullable',
             'image_id' => 'required|string|exists:cover_images,image_id',
+            'online_id' => 'required|string|exists:book_onlines,online_id',
+            'barcode_id' => 'required|string|exists:barcodes,barcode_id',
+            'author_id' => 'required|string|exists:authors,author_id',
+            'category_id' => 'required|string|exists:categories,category_id',
+            'publisher_id' => 'required|string|exists:publishers,publisher_id',
+            'isbn_id' => 'required|string|exists:isbns,isbn_id',
 
         ]);
 
         $bookPurchase = BookPurchase::create($request->all()); // Create a new Publisher instance
         return response()->json([[
             'message' => 'Successfully created book purchase',
-            'publisher' => $bookPurchase->jsonSerialize() // Return the created publisher data
+            'bookPurchase' => $bookPurchase->jsonSerialize() // Return the created publisher data
         ], 201]);
     }
 
@@ -93,6 +104,12 @@ class BookPurchaseController extends Controller
             return response()->json([['message' => 'Book Purchased not found'], 404]); // Handle not found cases
         }
         $bookPurchase->coverImageForeign;  // Get the foreign key data i.e-> CoverImageForeign from the Model instance function
+        $bookPurchase->bookOnlineForeign; // Get the foreign key data
+        $bookPurchase->barcodeForeign; // Get the foreign key data
+        $bookPurchase->authorForeign; // Get the foreign key data
+        $bookPurchase->categoryForeign; // Get the foreign key data
+        $bookPurchase->publisherForeign; // Get the foreign key data
+        $bookPurchase->isbnForeign; // Get the foreign key data
         return response()->json([($bookPurchase)->jsonSerialize(), 200]);
     }
 

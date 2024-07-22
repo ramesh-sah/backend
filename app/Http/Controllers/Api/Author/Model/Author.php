@@ -13,7 +13,7 @@ use Ramsey\Uuid\Uuid;
 class Author extends Model
 {
     use HasFactory, HasUuids, SoftDeletes, FilterQueryString;
-    protected $table = 'author';
+    protected $table = 'authors';
     protected $primaryKey = 'author_id';
     protected $fillable = [
         'author_first_name',

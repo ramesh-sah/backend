@@ -1,36 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Model;
+namespace App\Http\Controllers\Api\Isbn\Model;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Mehradsadeghi\FilterQueryString\FilterQueryString;
 use Ramsey\Uuid\Uuid;
 
-class Publishers extends Model
+class Isbn extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids, SoftDeletes, FilterQueryString;
 
-    protected $table = 'publishers';
-    protected $primaryKey = 'publisher_id';
+    protected $table = 'isbns';
+    protected $primaryKey = 'isbn_id';
     protected $fillable = [
-        'publisher_name',
-        'publication_place',
+        'isbn'
+    ];
+    protected $filters = [
+        'sort',
+        'like',
+        'in',
     ];
 
-    // Static counter for custom IDs
-    // private static $counter = 0;
-
-    // public static function create(array $attributes = [])
-    // {
-    //     // Generate a custom ID
-    //     self::$counter++;
-    //     $customId = 'pub-' . str_pad(self::$counter, 4, '0', STR_PAD_LEFT);
-
-    //     // Set the custom ID as the publisher_id
-    //     $attributes['publisher_id'] = $customId;
-
-    //     // Create the publisher
-    //     return parent::create($attributes);
-    // }
+    protected $dates = ['deleted_at'];
 }

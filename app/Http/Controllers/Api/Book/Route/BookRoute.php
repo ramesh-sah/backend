@@ -1,15 +1,15 @@
 <?php
 
-use App\Http\Controllers\Api\Publisher\Controller\PublishersController; // Correct import
+use App\Http\Controllers\Api\Book\Controller\BookController; // Correct import
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// Define the routes for Publishers
-Route::prefix('/publishers')->middleware(['auth:sanctum'])->group(function () {
-    Route::get('/', [PublishersController::class, 'index']);
-    Route::get('/{id}', [PublishersController::class, 'show']);
-    Route::post('/', [PublishersController::class, 'store']);
-    Route::put('/{id}', [PublishersController::class, 'update']);
-    Route::delete('/{id}', [PublishersController::class, 'destroy']);
+// Define the routes for Book
+Route::prefix('/admin/book')->middleware(['auth:admin'])->group(function () {
+    Route::get('/', [BookController::class, 'index']);
+    Route::get('/{id}', [BookController::class, 'show']);
+    Route::post('/', [BookController::class, 'store']);
+    Route::put('/{id}', [BookController::class, 'update']);
+    Route::delete('/{id}', [BookController::class, 'destroy']);
 });
