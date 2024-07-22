@@ -16,7 +16,7 @@ class Member extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasUuids, HasRoles, SoftDeletes;
 
-    protected $guard='member'; //set the guard variable
+    protected $guard = 'member'; //set the guard variable
 
     protected $primaryKey = 'member_id'; // Set the primary key to 'user_id'
     /**
