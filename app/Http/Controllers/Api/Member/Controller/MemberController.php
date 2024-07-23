@@ -23,7 +23,6 @@ class MemberController extends BaseController
             'last_name' => 'required|string|max:255',
             'dob' => 'required|date',
             'roll_number' => 'required|integer',
-            'username' => 'required| string |max:20|unique:members,username',
             'address' => 'required|string|max:500',
             'gender' => 'required|in:male,female,other',
             'email' => 'required|email|regex:/@patancollege\.edu\.np$/|unique:members,email',
@@ -39,14 +38,12 @@ class MemberController extends BaseController
             'last_name' => $request->last_name,
             'dob' => $request->dob,
             'roll_number' => $request->roll_number,
-            'username' => $request->username,
             'address' => $request->address,
             'gender' => $request->gender,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'contact_number' => $request->contact_number,
             'enrollment_year' => $request->enrollment_year,
-            'account_status' => $request->account_status,
             'image_link' => $request->image_link,
 
         ]);
@@ -85,6 +82,12 @@ class MemberController extends BaseController
         ]);
 
         $member = Member::where('email', $request->email)->first();
+
+        if (!$member) {
+            return response()->json([[
+                'message' => 'User not found or Invalid email provided.',
+            ], 404]);
+        }
 
         if (!$member || !Hash::check($request->password, $member->password)) {
             return response()->json([[

@@ -26,7 +26,7 @@ class AdminController extends BaseController
         $request->validate([
 
             'username' => 'required|string|unique:admins,username',
-            
+
             'email' => 'required|email|regex:/@patancollege\.edu\.np$/|unique:admins,email',
             'email_verified_at' => 'nullable|date',
             'password' => 'required|string|min:8',
@@ -58,7 +58,7 @@ class AdminController extends BaseController
     }
 
     public function logoutAdmin(Request $request)
-    { 
+    {
         //check and  validate the token and then delete the token
         $token = $request->user('admin')->currentAccessToken();
         $request->user('admin')->tokens()->where('id', $token->id)->delete();
@@ -78,6 +78,12 @@ class AdminController extends BaseController
 
         $admin = Admin::where('email', $request->email)->first();
 
+        if (!$admin) {
+            return response()->json([[
+                'message' => 'Admin not found or Invalid email provided.',
+            ], 404]);
+        }
+
         if (!$admin || !Hash::check($request->password, $admin->password)) {
             return response()->json([[
                 'message' => 'Invalid password provided.',
@@ -86,10 +92,10 @@ class AdminController extends BaseController
 
         $token = $admin->createToken('mytoken', ['admin'])->plainTextToken; //created the admin token after the login
 
-        return response()->json([[
-            'admin user' => $admin->toArray(),
+        return response()->json([
+            'adminuser' => $admin->toArray(),
             'token' => $token,
-        ],201]);
+        ], 200);
     }
     public function index(Request $request)
     {
@@ -133,7 +139,7 @@ class AdminController extends BaseController
         // Return the data as a JSON response
 
     }
-   
+
 
     public function show(string $admin_id)
     {
@@ -148,7 +154,7 @@ class AdminController extends BaseController
     public function update(Request $request, string $admin_id)
     {
         // Update the resource
-        $admin= Admin::find($admin_id); // Use the correct model name
+        $admin = Admin::find($admin_id); // Use the correct model name
         if (!$admin) {
             return response()->json([['message' => 'admin not found'], 404]); // Handle not found cases
         }
@@ -158,5 +164,4 @@ class AdminController extends BaseController
             'publisher' => $admin->jsonSerialize() // Return the updated publisher data
         ], 200]);
     }
-
 }

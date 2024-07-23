@@ -85,6 +85,12 @@ class EmployeeController extends BaseController
 
         $employee = Employee::where('email', $request->email)->first();
 
+        if (!$employee) {
+            return response()->json([[
+                'message' => 'Employee not found or Invalid email provided.',
+            ], 404]);
+        }
+
         if (!$employee || !Hash::check($request->password, $employee->password)) {
             return response()->json([
                 'message' => 'Invalid password provided.',
@@ -94,9 +100,9 @@ class EmployeeController extends BaseController
         $token = $employee->createToken('mytoken', ['employee'])->plainTextToken; //created the admin token after the login
 
         return response()->json([
-            'employee data' => $employee,
+            'employeeuser' => $employee,
             'token' => $token,
-        ], 201);
+        ], 200);
     }
 
     public function index()
