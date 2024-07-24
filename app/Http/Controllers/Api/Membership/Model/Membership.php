@@ -26,7 +26,7 @@ class Membership extends Model
       'membership_status',
       'member_id',
       'employee_id',
-        'expiry_date'
+    'expiry_date'
     ];
 
     public function memberForeign()

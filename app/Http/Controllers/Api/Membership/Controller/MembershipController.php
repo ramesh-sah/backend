@@ -68,7 +68,9 @@ class MembershipController extends Controller
         // Post request
         $request->validate([
             'membership_status'=>'required|string',
-            'member_id'=>'exists:members,member_id'
+            'member_id'=>'exists:members,member_id',
+            'employee_id'=>'exists:employees,employee_id',
+            
          
         ]);
 
