@@ -14,42 +14,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $sortBy = $request->input('sort_by'); // sort_by params 
-        $sortOrder = $request->input('sort_order'); // sort_order params
-        $filters = $request->input('filters'); // filter params
-        $perPage = $request->input('per_page', 5); // Default to 10 items per page
-
-        $query = Category::query();
-
-        // Apply Sorting
-        $query = SortHelper::applySorting($query, $sortBy, $sortOrder);
-
-        // Apply Filtering
-        $query = FilterHelper::applyFiltering($query, $filters);
-
-        // Get Total Count for Pagination
-        $total = $query->count();
-
-        // Apply Pagination
-        $category = PaginationHelper::applyPagination(
-            $query->paginate($perPage)->items(),
-            $perPage,
-            $request->input('page', 1), // Default to page 1
-            $total
-        );
-
-
-        // foreach ($bookPurchase as $bookPurchase) {
-        //     $bookPurchase->CoverImageForeign;
-        // }
-
-        return response()->json([[
-            'data' => $category,
-            'total' => $category->total(),
-            'per_page' => $category->perPage(),
-            'current_page' => $category->currentPage(),
-            'last_page' => $category->lastPage(),
-        ], 200]);
+        return Category::All();
     }
     public function store(Request $request)
     {
@@ -80,7 +45,7 @@ class CategoryController extends Controller
         // Update the resource
         $category = Category::find($category_id); // Use the correct model name
         if (!$category) {
-            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
+            return response()->json([['message' => 'Category not found'], 404]); // Handle not found cases
         }
         $category->update($request->all());
         return response()->json([[
@@ -94,7 +59,7 @@ class CategoryController extends Controller
         // Delete the resource
         $category = Category::find($category_id); // Use the correct model name
         if (!$category) {
-            return response()->json([['message' => 'Publisher not found'], 404]); // Handle not found cases
+            return response()->json([['message' => 'Category  not found'], 404]); // Handle not found cases
         }
         $category->delete();
         return response()->json([[

@@ -1,36 +1,41 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Model;
+namespace App\Http\Controllers\Api\Membership\Model;
 
+use App\Http\Controllers\Api\Employee\Model\Employee;
+use App\Http\Controllers\Api\Member\Model\Member;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Mehradsadeghi\FilterQueryString\FilterQueryString;
 use Ramsey\Uuid\Uuid;
 
-class Publishers extends Model
+class Membership extends Model
 {
-    use HasFactory;
-
-    protected $table = 'publishers';
-    protected $primaryKey = 'publisher_id';
+    use HasFactory, HasUuids,  SoftDeletes, FilterQueryString;
+    protected $table = 'memberships';
+    protected $primaryKey = 'membership_id';
+    protected $filters = [
+        'sort',
+        'like',
+        'in',
+    ];
     protected $fillable = [
-        'publisher_name',
-        'publication_place',
+      'membership_status',
+      'member_id',
+      'employee_id',
+        'expiry_date'
     ];
 
-    // Static counter for custom IDs
-    // private static $counter = 0;
-
-    // public static function create(array $attributes = [])
-    // {
-    //     // Generate a custom ID
-    //     self::$counter++;
-    //     $customId = 'pub-' . str_pad(self::$counter, 4, '0', STR_PAD_LEFT);
-
-    //     // Set the custom ID as the publisher_id
-    //     $attributes['publisher_id'] = $customId;
-
-    //     // Create the publisher
-    //     return parent::create($attributes);
-    // }
+    public function memberForeign()
+    {
+        return $this->belongsTo(Member::class, 'member_id');
+    }
+    public function employeeForeign()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+    protected $dates = ['deleted_at'];
 }

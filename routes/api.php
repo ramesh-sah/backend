@@ -37,7 +37,7 @@ Route::name('')->group(base_path('app/Http/Controllers/Api/BookPurchaseCategory/
 Route::name('')->group(base_path('app/Http/Controllers/Api/Book/Route/BookRoute.php'));
 Route::name('')->group(base_path('app/Http/Controllers/Api/DamagedBook/Route/DamagedBookRoute.php'));
 
-
+Route::name('')->group(base_path('app/Http/Controllers/Api/Membership/Route/MembershipRoute.php'));
 
 
 Route::name('')->group(base_path('app/Http/Controllers/Api/NewBookRequest/Route/NewBookRequestRoute.php'));

@@ -1,69 +1,118 @@
 <?php
 
-namespace App\Http\Controllers\Api\Publisher\Controller;
+namespace App\Http\Controllers\Api\Membership\Controller;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Api\Publisher\Model\Publishers;
+use App\Http\Controllers\Api\Membership\Model\Membership;
 use Illuminate\Http\Request;
 
-class PublishersController extends Controller
+
+use App\Http\Controllers\Helpers\Sort\SortHelper;
+use App\Http\Controllers\Helpers\Filters\FilterHelper;
+use App\Http\Controllers\Helpers\Pagination\PaginationHelper;
+
+class MembershipController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch all the Publisher objects
-        return Publishers::all();
-        // $publishers = $query->simplePaginate(10);// Use the correct model name
+        $sortBy = $request->input('sort_by'); // sort_by params 
+        $sortOrder = $request->input('sort_order'); // sort_order params
+        $filters = $request->input('filters'); // filter params
+        $perPage = $request->input('per_page', 10); // Default to 10 items per page
+        $currentPage = $request->input('page', 1); // Default to page 1
+
+        $query = Membership::query();
+
+        // Apply Sorting
+        $query = SortHelper::applySorting($query, $sortBy, $sortOrder);
+
+        // Apply Filtering
+        $query = FilterHelper::applyFiltering($query, $filters);
+
+        // Get Total Count for Pagination
+        $total = $query->count();
+
+        // Eager load relationships
+   
+
+
+        // Get the paginated result
+        $membership= $query->skip(($currentPage - 1) * $perPage)->take($perPage)->get();
+
+        // Retrieve foreign key data
+        foreach ($membership as $membership) {
+            $membership->memberForeign;        // Get the foreign key data
+            $membership->employeeForeign;
+        }
+
+        // Apply Pagination Helper
+        $paginatedResult = PaginationHelper::applyPagination(
+            $membership,
+            $perPage,
+            $currentPage,
+            $total
+        );
+
+        return response()->json([[
+            'data' => $paginatedResult->items(),
+            'total' => $paginatedResult->total(),
+            'per_page' => $paginatedResult->perPage(),
+            'current_page' => $paginatedResult->currentPage(),
+            'last_page' => $paginatedResult->lastPage(),
+        ], 200]);
     }
+
 
     public function store(Request $request)
     {
         // Post request
         $request->validate([
-            'publisher_name', // Add validation rules
-            'publication_place',
+            'membership_status'=>'required|string',
+            'member_id'=>'exists:members,member_id'
+         
         ]);
 
-        $publisher = Publishers::create($request->all()); // Create a new Publisher instance
-        return response()->json([
+        $membership = Membership::create($request->all()); // Create a new Publisher instance
+        return response()->json([[
             'message' => 'Successfully created',
-            'publisher' => $publisher // Return the created publisher data
-        ], 201);
+            'membership data' => $membership // Return the created publisher data
+        ], 201]);
     }
 
-    public function show(string $publisher_id)
+    public function show(string $membership_id)
     {
         // Find the specific resource
-        $publisher = Publishers::find($publisher_id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $membership = Membership::find($membership_id); // Use the correct model name
+        if (!$membership) {
+            return response()->json([['message' => 'Membership not found'], 404]); // Handle not found cases
         }
-        return $publisher;
+        return response()->json($membership);
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $membership_id)
     {
         // Update the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $membership = Membership::find($membership_id); // Use the correct model name
+        if (!$membership) {
+            return response()->json(['message' => 'Membership  not found'], 404); // Handle not found cases
         }
-        $publisher->update($request->all());
-        return response()->json([
+        $membership->update($request->all());
+        return response()->json([[
             'message' => 'Successfully updated',
-            'publisher' => $publisher // Return the updated publisher data
-        ], 200);
+            'membership ' => $membership // Return the updated publisher data
+        ], 200]);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $membership_id)
     {
         // Delete the resource
-        $publisher = Publishers::find($id); // Use the correct model name
-        if (!$publisher) {
-            return response()->json(['message' => 'Publisher not found'], 404); // Handle not found cases
+        $membership = Membership::find($membership_id); // Use the correct model name
+        if (!$membership) {
+            return response()->json([['message' => 'Membership not found'], 404]); // Handle not found cases
         }
-        $publisher->delete();
-        return response()->json([
+        $membership->delete();
+        return response()->json([[
             'message' => 'Successfully deleted'
-        ], 200);
+        ], 200]);
     }
 }
