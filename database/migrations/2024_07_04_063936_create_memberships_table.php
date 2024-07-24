@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('memberships', function (Blueprint $table) {
             $table->uuid('membership_id')->primary();
             $table->date('start_date')->default(now());
-            $table->date('expiry_date');
+            $table->date('expiry_date')->default(now()->addDays(2));
             $table->enum('membership_status', ['active', 'expired'])->default('active');
-            $table->string('member_id');
-            $table->foreign('member_id')->references('member_id')->on('members')->onDelete('cascade');
-            $table->string('employee_id');
-            $table->foreign('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
+            $table->string('member_id')->nullable();
+            $table->foreign('member_id')->references('member_id')->on('members');
+            $table->string('employee_id')->nullable();
+            $table->foreign('employee_id')->references('employee_id')->on('employees');
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();
         });
     }
 

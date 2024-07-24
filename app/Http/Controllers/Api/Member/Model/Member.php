@@ -30,7 +30,6 @@ class Member extends Authenticatable
         'last_name',
         'dob',
         'roll_number',
-        'username',
         'address',
         'gender',
         'email',

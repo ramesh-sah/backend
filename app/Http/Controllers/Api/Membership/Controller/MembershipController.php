@@ -33,11 +33,11 @@ class MembershipController extends Controller
         $total = $query->count();
 
         // Eager load relationships
-   
+
 
 
         // Get the paginated result
-        $membership= $query->skip(($currentPage - 1) * $perPage)->take($perPage)->get();
+        $membership = $query->skip(($currentPage - 1) * $perPage)->take($perPage)->get();
 
         // Retrieve foreign key data
         foreach ($membership as $membership) {
@@ -67,11 +67,12 @@ class MembershipController extends Controller
     {
         // Post request
         $request->validate([
-            'membership_status'=>'required|string',
-            'member_id'=>'exists:members,member_id',
-            'employee_id'=>'exists:employees,employee_id',
-            
-         
+            'membership_status' => 'string',
+            'member_id' => 'exists:members,member_id',
+            'employee_id' => 'exists:employees,employee_id',
+            'expiry_date' => 'date'
+
+
         ]);
 
         $membership = Membership::create($request->all()); // Create a new Publisher instance
@@ -88,6 +89,8 @@ class MembershipController extends Controller
         if (!$membership) {
             return response()->json([['message' => 'Membership not found'], 404]); // Handle not found cases
         }
+        $membership->memberForeign;        // Get the foreign key data
+        $membership->employeeForeign;
         return response()->json($membership);
     }
 
@@ -96,7 +99,7 @@ class MembershipController extends Controller
         // Update the resource
         $membership = Membership::find($membership_id); // Use the correct model name
         if (!$membership) {
-            return response()->json(['message' => 'Membership  not found'], 404); // Handle not found cases
+            return response()->json([['message' => 'Membership  not found'], 404]); // Handle not found cases
         }
         $membership->update($request->all());
         return response()->json([[
