@@ -18,10 +18,18 @@ class BookController extends Controller
         $sortBy = $request->input('sort_by'); // sort_by params 
         $sortOrder = $request->input('sort_order'); // sort_order params
         $filters = $request->input('filters'); // filter params
+        $category = $request->input('category'); // category param
         $perPage = $request->input('per_page', 10); // Default to 10 items per page
         $currentPage = $request->input('page', 1); // Default to page 1
 
         $query = Book::query();
+
+        // Apply Category Filtering
+        if ($category) {
+            $query->whereHas('bookPurchaseForeign.categoryForeign', function ($q) use ($category) {
+                $q->where('name', $category); // Assuming 'name' is the category field
+            });
+        }
 
         // Apply Sorting
         $query = SortHelper::applySorting($query, $sortBy, $sortOrder);
